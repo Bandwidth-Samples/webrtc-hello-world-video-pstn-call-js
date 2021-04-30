@@ -1,3 +1,9 @@
+# macOS System file
+.DS_Store
+
+# Environment file
+.env
+
 # Compiled class file
 *.class
 /target
