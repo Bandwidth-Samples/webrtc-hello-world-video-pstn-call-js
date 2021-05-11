@@ -1,19 +1,29 @@
-const fs = require("fs");
 const express = require("express");
 const BandwidthWebRTC = require("@bandwidth/webrtc");
 const BandwidthVoice = require("@bandwidth/voice");
 const uuid = require("uuid");
-const dotenv = require("dotenv").config();
-const jwt_decode = require("jwt-decode");
+const dotenv = require("dotenv");
 const app = express();
 const bodyParser = require("body-parser");
+
+dotenv.config();
+
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
 // config
-const port = 3000;
-const localDir = __dirname;
+const port = process.env.LOCAL_PORT || 3000;
 const accountId = process.env.BW_ACCOUNT_ID;
+const username = process.env.BW_USERNAME;
+const password = process.env.BW_PASSWORD;
+
+// Check to make sure required environment variables are set
+if (!accountId || !username || !password) {
+  console.error(
+      "ERROR! Please set the BW_ACCOUNT_ID, BW_USERNAME, and BW_PASSWORD environment variables before running this app"
+  );
+  process.exit(1);
+}
 
 // Global variables
 BandwidthWebRTC.Configuration.basicAuthUserName = process.env.BW_USERNAME;
@@ -28,7 +38,7 @@ var voiceController = BandwidthVoice.APIController;
 let calls = new Map();
 
 // track our session ID and phone call Id
-//  - if not a demo, these would be stored in persistant storage
+//  - if not a demo, these would be stored in persistent storage
 let sessionId = false;
 let callId = false;
 
@@ -49,7 +59,7 @@ app.get("/startBrowserCall", async (req, res) => {
     await addParticipantToSession(accountId, participant.id, session_id);
     // now that we have added them to the session, we can send back the token they need to join
     res.send({
-      message: "created particpant and setup session",
+      message: "created participant and setup session",
       token: token,
     });
   } catch (error) {
@@ -226,6 +236,7 @@ async function createParticipant(account_id, tag, permissions) {
   var participantBody = new BandwidthWebRTC.Participant({
     tag: tag,
     publishPermissions: permissions,
+    deviceApiVersion: "V3"
   });
   console.log("creating Participant", participantBody);
   try {
@@ -278,7 +289,7 @@ async function initiateCallToPSTN(account_id, from_number, to_number) {
     from: from_number,
     to: to_number,
     applicationId: process.env.BW_VOICE_APPLICATION_ID,
-    answerUrl: process.env.BASE_CALLBACK_URL + "callAnswered",
+    answerUrl: process.env.BASE_CALLBACK_URL + "/callAnswered",
     answerMethod: "POST",
     callTimeout: "30",
   });
