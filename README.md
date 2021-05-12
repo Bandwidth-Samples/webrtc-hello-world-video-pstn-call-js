@@ -95,7 +95,6 @@ BW_ACCOUNT_ID                        # Your Bandwidth Account Id
 BW_USERNAME                          # Your Bandwidth API Username
 BW_PASSWORD                          # Your Bandwidth API Password
 BW_VOICE_APPLICATION_ID              # Your Voice Application Id created in the dashboard
-BW_MESSAGING_APPLICATION_ID          # Your Messaging Application Id created in the dashboard
 BW_NUMBER                            # The Bandwidth phone number involved with this application
 USER_NUMBER                          # The user's phone number involved with this application
 BASE_CALLBACK_URL                    # Your public base url to receive Bandwidth Webhooks. No trailing '/'
@@ -121,8 +120,8 @@ node server.js
 ## Ngrok
 
 A simple way to set up a local callback URL for testing is to use the free tool [ngrok](https://ngrok.com/).  
-After you have downloaded and installed `ngrok` run the following command to open a public tunnel to your port (`$PORT`)
+After you have downloaded and installed `ngrok` run the following command to open a public tunnel to your port (`$LOCAL_PORT`)
 ```sh
-ngrok http $PORT
+ngrok http $LOCAL_PORT
 ```
-You can view your public URL at `http://127.0.0.1:{PORT}` after ngrok is running.  You can also view the status of the tunnel and requests/responses here.
+You can view your public URL at `http://127.0.0.1:{LOCAL_PORT}` after ngrok is running.  You can also view the status of the tunnel and requests/responses here.
